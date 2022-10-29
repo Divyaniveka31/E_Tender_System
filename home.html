@@ -1,0 +1,194 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ ̥̥   <title>Home Page</title>
+
+    <link rel="stylesheet" href="./css/home.css">
+
+    <!-- Bootstrap CDN CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-dark bg-dark fixed-top flex-md-nowrap p-2 shadow">
+
+        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">E-Tender</a>
+
+        <ul class="navbar-nav px-3 d-flex flex-row">
+            <li class="nav-item text-nowrap mx-2 my-1">
+                <a id="userlink" class="nav-link" aria-current="page" href="#">Username</a>
+            </li>
+            
+            <li class="nav-item text-nowrap mx-2 my-1">
+                <a id="ads" class="nav-link" aria-current="page" href="#" target="_blank">Ads Page</a>
+            </li>
+
+            <li class="nav-item mx-2 my-1">
+                <a id="signoutlink" class="nav-link " aria-current="page" href="#">Sign Out</a>
+            </li>
+        </ul>
+
+
+    </nav>
+    <div class="container-fluid" id="sidebar-content">
+        <div class="row">
+            <div class="col-md-2 bg-light d-none d-md-block sidebar">
+                <div class="left-sidebar">
+                    <ul class="nav flex-column sidebar-nav">
+
+                        <li class="nav-item">
+                            <a class="nav-link active" href="profile.html">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor"
+                                    class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                                </svg> Profile
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor"
+                                    class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                                </svg> Make Request</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor"
+                                    class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                                </svg> My Requests</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 id="hh"> </h3>
+    <h3 id="logoname"></h3>
+
+
+
+    <script>
+        let userlink = document.getElementById('userlink');
+        let signoutlink = document.getElementById('signoutlink');
+        let header = document.getElementById('hh');
+        let logoname = document.getElementById('logoname');
+        let ads = document.getElementById('ads');
+        var currentUser = null;
+
+        function getUsername() {
+            let keepLoggedIn = localStorage.getItem("keepLoggedIn");
+
+            if (keepLoggedIn == 'yes') {
+                currentUser = JSON.parse(localStorage.getItem('user'));
+                parentObj = localStorage.getItem('parent');
+            } else {
+                currentUser = JSON.parse(sessionStorage.getItem('user'));
+                parentObj = sessionStorage.getItem('parent');
+            }
+        }
+
+        function Signout() {
+            sessionStorage.removeItem('user');
+            localStorage.removeItem('user');
+            localStorage.removeItem('keepLoggedIn');
+            window.location = "home.html";
+        }
+
+        window.onload = function () {
+            getUsername();
+            console.log(parentObj);
+            if (currentUser == null) {
+                userlink.innerHTML = "Create New Account";
+                userlink.classList.replace("nav-link", "btn");
+                userlink.classList.add("btn-primary");
+                userlink.href = "register.html";
+
+                document.getElementById('sidebar-content').style.display = "none";
+
+                
+                header.style.backgroundImage = "url('Anna_University_Logo.png')";
+                header.style.backgroundSize = "25%";
+                header.style.backgroundPosition ="center center";
+                header.style.marginTop = "5%";
+                header.style.backgroundRepeat = "no-repeat";
+                header.style.height = "60vh";
+                logoname.innerHTML = "Anna University Regional Campus Madurai";
+                logoname.style.textAlign = "center";
+                logoname.style.textTransform = "uppercase";
+
+                ads.classList.replace("nav-link", "btn");
+                ads.classList.add("btn-primary");
+                ads.href = "ad.html";
+
+
+                signoutlink.innerHTML = "Login";
+                signoutlink.classList.replace("nav-link", "btn");
+                signoutlink.classList.add("btn-success");
+                signoutlink.href = "signin.html";
+            } else {
+                if (currentUser.username === "aurcm") {
+                    userlink.innerHTML = currentUser.username;
+                    window.location = "admin.html";
+                    userlink.classList.replace("btn", "nav-link");
+                    userlink.classList.remove("btn-primary");
+                    userlink.href = "#";
+
+                    document.getElementById('sidebar-content').style.display = "flex";
+
+                    signoutlink.innerHTML = "Sign Out";
+                    signoutlink.classList.replace("btn", "nav-link");
+                    signoutlink.classList.remove("btn-success");
+                    signoutlink.href = "javascript:Signout()";
+                } else {
+
+                    if (parentObj == 'StaffList') {
+                        userlink.innerHTML = currentUser.username;
+                        window.location = "profile.html";
+                        userlink.classList.replace("btn", "nav-link");
+                        userlink.classList.remove("btn-primary");
+                        userlink.href = "#";
+
+                        document.getElementById('sidebar-content').style.display = "flex";
+
+                        signoutlink.innerHTML = "Sign Out";
+                        signoutlink.classList.replace("btn", "nav-link");
+                        signoutlink.classList.remove("btn-success");
+                        signoutlink.href = "javascript:Signout()";
+                    }
+                    else if (parentObj == 'VendorList'){
+                        userlink.innerHTML = currentUser.username;
+                        window.location = "vendor-1.html";
+                        userlink.classList.replace("btn", "nav-link");
+                        userlink.classList.remove("btn-primary");
+                        userlink.href = "#";
+
+                        document.getElementById('sidebar-content').style.display = "flex";
+
+                        signoutlink.innerHTML = "Sign Out";
+                        signoutlink.classList.replace("btn", "nav-link");
+                        signoutlink.classList.remove("btn-success");
+                        signoutlink.href = "javascript:Signout()";
+                    }
+
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

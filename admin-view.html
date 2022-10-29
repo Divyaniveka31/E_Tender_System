@@ -1,0 +1,354 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Quotations</title>
+
+    <link rel="stylesheet" href="./css/profile.css" />
+
+    <!-- Bootstrap CDN CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@2.4.0/dist/email.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-dark bg-dark fixed-top flex-md-nowrap p-2 shadow">
+        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Dashboard</a>
+
+        <ul class="navbar-nav px-3 d-flex flex-row">
+            <li class="nav-item text-nowrap mx-2 my-1">
+                <a id="userlink" class="nav-link" aria-current="page" href="#">Username</a>
+            </li>
+
+            <li class="nav-item mx-2 my-1">
+                <a id="signoutlink" class="nav-link" aria-current="page" href="#">Sign out</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="container" id="sidebar-content">
+        <div class="row">
+            <div class="col-md-2 bg-light d-none d-md-block sidebar">
+                <div class="left-sidebar">
+                    <ul class="nav flex-column sidebar-nav">
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="admin.html">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor"
+                                    class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                                All Requests</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="approved-requests.html">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor"
+                                    class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                                Approved Requests</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="denied-requests.html">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor"
+                                    class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                                Denied Requests</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="admin-view.html">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor"
+                                    class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                                View Quotations</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            # This content is only varied from other three pages
+            <div id="hh" class="col-md-10">
+                <h2 class="mb-5">Quotations</h3>
+                    <div id="dynamic"></div>
+
+
+            </div>
+
+
+        </div>
+    </div>
+
+    <script>
+        let userlink = document.getElementById("userlink");
+        let signoutlink = document.getElementById("signoutlink");
+
+        var currentUser = null;
+
+        function getUsername() {
+            let keepLoggedIn = localStorage.getItem("keepLoggedIn");
+
+            if (keepLoggedIn == "yes") {
+                currentUser = JSON.parse(localStorage.getItem("user"));
+            } else {
+                currentUser = JSON.parse(sessionStorage.getItem("user"));
+            }
+        }
+
+        function Signout() {
+            sessionStorage.removeItem("user");
+            localStorage.removeItem("user");
+            localStorage.removeItem("keepLoggedIn");
+            window.location = "home.html";
+        }
+
+        window.onload = function () {
+            getUsername();
+            if (currentUser == null) {
+                userlink.innerHTML = "Create New Account";
+                userlink.classList.replace("nav-link", "btn");
+                userlink.classList.add("btn-primary");
+                userlink.href = "register.html";
+
+                document.getElementById("sidebar-content").style.display = "none";
+
+                signoutlink.innerHTML = "Login";
+                signoutlink.classList.replace("nav-link", "btn");
+                signoutlink.classList.add("btn-success");
+                signoutlink.href = "signin.html";
+            } else {
+                userlink.innerHTML = currentUser.username;
+                userlink.classList.replace("btn", "nav-link");
+                userlink.classList.remove("btn-primary");
+                userlink.href = "#";
+
+                document.getElementById("sidebar-content").style.display = "flex";
+
+                signoutlink.innerHTML = "Sign Out";
+                signoutlink.classList.replace("btn", "nav-link");
+                signoutlink.classList.remove("btn-success");
+                signoutlink.href = "javascript:Signout()";
+            }
+        };
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-app.js";
+        import {
+            getDatabase,
+            ref,
+            set,
+            child,
+            get,
+            update,
+        } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-database.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyC1uHLYNfJwAmSGTf6WgIdidvOt26qixdA",
+            authDomain: "e-tender-51968.firebaseapp.com",
+            databaseURL: "https://e-tender-51968-default-rtdb.firebaseio.com",
+            projectId: "e-tender-51968",
+            storageBucket: "e-tender-51968.appspot.com",
+            messagingSenderId: "217007316675",
+            appId: "1:217007316675:web:c3121238d3dedba5ec0c76"
+        };
+
+        import { getStorage, ref as stref, uploadBytes, getDownloadURL, listAll, deleteObject } from "https://www.gstatic.com/firebasejs/9.6.9/firebase-storage.js";
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const dbref = ref(db);
+        const s = getStorage(app);
+
+        const showcards = document.getElementById("dynamic");
+
+        function declineOthers(sub) {
+            return new Promise((resolve, reject) => {
+                get(child(dbref, "Quotations/")).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        snapshot.forEach((doc) => {
+                            doc.forEach((items) => {
+                                let data = items.val()
+                                if (data.result !== "Approved" && data.subject === sub) {
+                                    let uname = data.username;
+                                    let options = {
+                                        weekday: "long", year: "numeric", month: "short",
+                                        day: "numeric", hour: "2-digit", minute: "2-digit"
+                                    }
+
+                                    update(ref(db, `Quotations/${sub}/` + uname), {
+                                        result: "Declined",
+                                        deniedOn: new Date().toLocaleString("en-us", options)
+                                    })
+
+                                }
+
+
+
+                            })
+                        })
+                        resolve("success");
+                    }
+                    else {
+                        console.log("Cannot decline Other quotations");
+                    }
+
+                })
+            });
+
+        }
+
+        function sendApprove(e) {
+
+            let childId = e.target.id.substring(10);
+            let uname = namesArr[childId][0];
+            let sub = namesArr[childId][1];
+            let options = {
+                weekday: "long", year: "numeric", month: "short",
+                day: "numeric", hour: "2-digit", minute: "2-digit"
+            }
+
+            update(ref(db, `Quotations/${sub}/` + uname), {
+                result: "Approved",
+                approvedOn: new Date().toLocaleString("en-us", options)
+            })
+                .then(() => {
+                    declineOthers(sub).then((status) => {
+                        if (status === "success") {
+                            alert("Approved !");
+                            location.reload();
+                        }
+                    })
+
+                })
+
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
+
+
+        var namesArr = [];
+
+        get(child(dbref, "Quotations/")).then((snapshot) => {
+
+            if (snapshot.exists()) {
+
+                let content = "";
+                let idx = 0;
+
+                snapshot.forEach((doc) => {
+
+
+                    let header = `<h5 class="mt-5">${doc.key}</h5>`;
+                    content += header + "<hr>";
+
+                    doc.forEach((items) => {
+
+                        let card = "";
+
+                        if (items.val().result === undefined) {
+                            let uname = items.val().username;
+                            let quo = items.val().quotation;
+                            let sub = items.val().subject;
+                            namesArr.push([uname, sub]);
+
+                            card = `
+                                <div class="card mb-3" >
+                                    <div class="card-body">
+                                        <h6 class="card-title mt-2 mb-3">${uname}</h6><br>
+                                        <a class="btn btn-primary mb-2" style="float: right" href="${quo}"target="blank" >View</a>
+
+                                        <button type="button" id="approvebtn${idx}" class="btn btn-success" >Approve</button>
+                                    </div> 
+                                </div>
+                                ` ;
+                        }
+                        else {
+                            let uname = items.val().username;
+                            let sub = items.val().subject;
+                            namesArr.push([uname, sub]);
+                            if (items.val().result === "Approved") {
+                                let uname = items.val().username;
+                                let quo = items.val().quotation;
+                                let sub = items.val().subject;
+                                let stat = items.val().approvedOn;
+
+
+                                card = `
+                                <div class="card mb-3" >
+                                    <div class="card-body">
+                                        <h6 class="card-title mt-2 mb-3">${uname}</h6>
+                                        <a class="btn btn-primary mb-2" style="float: right" href="${quo}"target="blank" >View</a>
+                                        
+                                        <br><br>
+                                        <p class="card-text">
+                                            <small class="text-muted" id="time">Approved on: ${stat}</small>
+                                        </p>
+                                    </div> 
+                                </div>
+                                ` ;
+                            }
+                            else {
+                                let uname = items.val().username;
+                                let quo = items.val().quotation;
+                                let sub = items.val().subject;
+                                let stat = items.val().deniedOn;
+
+                                card = `
+                                <div class="card mb-3" >
+                                    <div class="card-body">
+                                        <h6 class="card-title mt-2 mb-3">${uname}</h6>
+                                        <a class="btn btn-primary mb-2" style="float: right" href="${quo}"target="blank" >View</a><br><br>
+                                        <p class="card-text">
+                                            <small class="text-muted" id="time">Declined on: ${stat}</small>
+                                        </p>
+
+                                    </div> 
+                                </div>
+                                ` ;
+                            }
+                        }
+
+                        content += card;
+                        idx++;
+                    })
+
+
+                    showcards.innerHTML = content;
+
+                });
+
+                const apprs = document.querySelectorAll(`*[id^="approvebtn"]`);
+                
+
+                for (var i = 0; i < apprs.length; i++) {
+                    apprs[i].addEventListener("click", (e) => { sendApprove(e); });
+                }
+
+            }
+            else {
+                console.log("not connnected");
+            }
+
+        });
+
+
+    </script>
+</body>
+
+</html>
